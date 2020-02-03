@@ -15,7 +15,9 @@ namespace CSConfluenceAutomationFWWPF
             //    @"}],""space"":{""key"":" + terAzonosito + @",""body"":{""storage"":{""value"":" + html + @",""representation"":""storage""}}}";
 
 
-             string DATA = "{\"type\":\"page\",\"title\":\"" + cim + "\",\"space\":{\"key\":\"" + terAzonosito + "\"},\"body\":{\"storage\":{\"value\":\"" + html + "\",\"representation\":\"storage\"}}}";
+             string DATA = "{\"type\":\"page\",\"ancestors\":[{\"type\":\"page\",\"id\":" + szuloOsztalyAzonosito + 
+                "}],\"title\":\"" + cim + "\",\"space\":{\"key\":\"" + terAzonosito + "\"},\"body\":{\"storage\":{\"value\":\"" 
+                + html + "\",\"representation\":\"storage\"}}}";
 
         System.Net.Http.HttpClient client = new System.Net.Http.HttpClient();
             client.BaseAddress = new System.Uri(URL);
