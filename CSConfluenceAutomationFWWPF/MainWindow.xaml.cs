@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -30,6 +31,7 @@ namespace CSConfluenceAutomationFWWPF
         public string APPSETTINGS_TERAZONOSITO = ConfigurationManager.AppSettings["TerAzonosito"];
         public string APPSETTINGS_SZULOOSZTALYAZONOSITO = ConfigurationManager.AppSettings["SzuloOsztalyAzonosito"];
         public string APPSETTINGS_OLDALCIM = ConfigurationManager.AppSettings["OldalCim"];
+        public string APPSETTINGS_OLDALAZONOSITO = ConfigurationManager.AppSettings["OldalAzonosito"];
         public MainWindow()
         {
             InitializeComponent();
@@ -54,7 +56,7 @@ namespace CSConfluenceAutomationFWWPF
         private void UploadClick(object sender, RoutedEventArgs e)
         {
             Metodus metodus = new Metodus();
-            
+
             string html = "";
 
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -79,6 +81,34 @@ namespace CSConfluenceAutomationFWWPF
                 , APPSETTINGS_FELHASZNALONEV
                 , APPSETTINGS_JELSZO
                 );
-       }
+        }
+
+        public void UploadImage(object sender, RoutedEventArgs e)
+        {
+            Metodus metodus = new Metodus();
+
+            string fajlNev = "";
+            ByteArrayContent kepByteTomb = null;
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "image files (*.jpeg)|*.jpeg|(*.jpg)|*.jpg|(*.png)|*.png";
+            openFileDialog.InitialDirectory = @"d:\";
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                kepByteTomb = new ByteArrayContent(File.ReadAllBytes(openFileDialog.FileName));
+                fajlNev = System.IO.Path.GetFileName(openFileDialog.FileName);
+            }
+
+            metodus.ConvertFromCURL(
+                APPSETTINGS_FELHASZNALONEV
+                , APPSETTINGS_JELSZO
+                , APPSETTINGS_URL
+                , APPSETTINGS_OLDALAZONOSITO
+                , kepByteTomb
+                , fajlNev
+                );
+        }
+       
     }
 }

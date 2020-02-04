@@ -8,5 +8,6 @@
         Title="MainWindow" Height="300" Width="250">
     <Grid>
         <Button Content="Upload to Conflu" Click="UploadClick" Height="50" Width="100" Margin="0 0 0 50"/>
+        <Button Content="Upload image" Click="UploadImage" Height="50" Width="100" Margin="0 100 0 0"/>
     </Grid>
 </Window>
