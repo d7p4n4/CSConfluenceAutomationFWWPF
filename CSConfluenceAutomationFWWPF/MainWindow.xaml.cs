@@ -31,7 +31,7 @@ namespace CSConfluenceAutomationFWWPF
         public string APPSETTINGS_TERAZONOSITO = ConfigurationManager.AppSettings["TerAzonosito"];
         public string APPSETTINGS_SZULOOSZTALYAZONOSITO = ConfigurationManager.AppSettings["SzuloOsztalyAzonosito"];
         public string APPSETTINGS_OLDALCIM = ConfigurationManager.AppSettings["OldalCim"];
-        public string APPSETTINGS_OLDALAZONOSITO = ConfigurationManager.AppSettings["OldalAzonosito"];
+        public string APPSETTINGS_OLDALNEVE = ConfigurationManager.AppSettings["OldalNeve"];
         public MainWindow()
         {
             InitializeComponent();
@@ -88,7 +88,7 @@ namespace CSConfluenceAutomationFWWPF
                 APPSETTINGS_FELHASZNALONEV
                 , APPSETTINGS_JELSZO
                 , APPSETTINGS_URL
-                , APPSETTINGS_OLDALAZONOSITO
+                , APPSETTINGS_OLDALNEVE
                 , kepByteTomb
                 , fajlNev
                 );

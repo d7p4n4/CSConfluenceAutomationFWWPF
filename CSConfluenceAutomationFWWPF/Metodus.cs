@@ -36,11 +36,12 @@ namespace CSConfluenceAutomationFWWPF
         }
 
 
-        public async void KepFeltoltes(string felhasznaloNev, string jelszo, string URL, string oldalAzonositoja, ByteArrayContent kepByteTomb, string fajlNev)
+        public async void KepFeltoltes(string felhasznaloNev, string jelszo, string URL, string oldalNeve, ByteArrayContent kepByteTomb, string fajlNev)
         {
+            string oldalAzonositoja = GetOldalIDNevAlapjan(felhasznaloNev, jelszo, URL, oldalNeve);
             using (var httpClient = new HttpClient())
             {
-                using (var request = new HttpRequestMessage(new HttpMethod("POST"), URL + oldalAzonositoja + "/child/attachment"))
+                using (var request = new HttpRequestMessage(new HttpMethod("POST"), URL + "/" + oldalAzonositoja + "/child/attachment"))
                 {
                     request.Headers.TryAddWithoutValidation("X-Atlassian-Token", "nocheck");
 
@@ -55,6 +56,28 @@ namespace CSConfluenceAutomationFWWPF
                     var response = await httpClient.SendAsync(request);
                 }
             }
+        }
+
+        public string GetOldalIDNevAlapjan(string felhasznaloNev, string jelszo, string URL, string oldalNeve)
+        {
+            string eredmeny = "";
+            using (var httpClient = new HttpClient())
+            {
+                using (var request = new HttpRequestMessage(new HttpMethod("GET"), URL + "?title=" + oldalNeve + "&spaceKey=AT&expand=history"))
+                {
+                    var base64authorization = Convert.ToBase64String(Encoding.ASCII.GetBytes(felhasznaloNev + ":" + jelszo));
+                    request.Headers.TryAddWithoutValidation("Authorization", $"Basic {base64authorization}");
+
+                    //var response = await httpClient.SendAsync(request).Result;
+                    HttpResponseMessage message = httpClient.SendAsync(request).Result;
+                    string description = string.Empty;
+                    string result = message.Content.ReadAsStringAsync().Result;
+                    description = result;
+
+                    eredmeny = result.Replace("{\"results\":[{\"id\":\"", "").Substring(0, 8);
+                }
+            }
+            return eredmeny;
         }
     }
 }
