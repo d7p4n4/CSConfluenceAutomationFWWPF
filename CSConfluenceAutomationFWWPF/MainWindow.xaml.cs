@@ -36,23 +36,7 @@ namespace CSConfluenceAutomationFWWPF
         {
             InitializeComponent();
         }
-        /*-
-        private string btnOpenFile_Click(object sender, RoutedEventArgs e)
-        {
-            string html = "";
-
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "html files (*.html)|*.html";
-            openFileDialog.InitialDirectory = @"d:\";
-
-            if (openFileDialog.ShowDialog() == true)
-            {
-                html = File.ReadAllText(openFileDialog.FileName);
-            }
-
-            return html;
-        }
-        */
+        
         private void UploadClick(object sender, RoutedEventArgs e)
         {
             Metodus metodus = new Metodus();
@@ -100,7 +84,7 @@ namespace CSConfluenceAutomationFWWPF
                 fajlNev = System.IO.Path.GetFileName(openFileDialog.FileName);
             }
 
-            metodus.ConvertFromCURL(
+            metodus.KepFeltoltes(
                 APPSETTINGS_FELHASZNALONEV
                 , APPSETTINGS_JELSZO
                 , APPSETTINGS_URL
