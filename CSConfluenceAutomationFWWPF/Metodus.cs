@@ -11,13 +11,11 @@ namespace CSConfluenceAutomationFWWPF
 {
     public class Metodus
     {
-        public void AddConfluencePage(string cim, string terAzonosito, string szuloOsztalyAzonosito, string html, string URL, string felhasznaloNev, string jelszo)
+        public string AddConfluencePage(string cim, string terAzonosito, string szuloOsztalyNeve, string html, string URL, string felhasznaloNev, string jelszo)
        {
-            //string DATA = @"{""type"":""page"",""title"":" + cim + @",""ancestor"":[{""type"":""page"",""id:" + szuloOsztalyAzonosito +
-            //    @"}],""space"":{""key"":" + terAzonosito + @",""body"":{""storage"":{""value"":" + html + @",""representation"":""storage""}}}";
+            string szuloOsztalyAzonosito = GetOldalIDNevAlapjan(felhasznaloNev, jelszo, URL, szuloOsztalyNeve);
 
-
-             string DATA = "{\"type\":\"page\",\"ancestors\":[{\"type\":\"page\",\"id\":" + szuloOsztalyAzonosito + 
+            string DATA = "{\"type\":\"page\",\"ancestors\":[{\"type\":\"page\",\"id\":" + szuloOsztalyAzonosito + 
                 "}],\"title\":\"" + cim + "\",\"space\":{\"key\":\"" + terAzonosito + "\"},\"body\":{\"storage\":{\"value\":\"" 
                 + html + "\",\"representation\":\"storage\"}}}";
 
@@ -32,11 +30,11 @@ namespace CSConfluenceAutomationFWWPF
             HttpResponseMessage message = client.PostAsync(URL, content).Result;
             string description = string.Empty;
                string result = message.Content.ReadAsStringAsync().Result;
-                description = result;
+                return result;
         }
 
 
-        public async void KepFeltoltes(string felhasznaloNev, string jelszo, string URL, string oldalNeve, ByteArrayContent kepByteTomb, string fajlNev)
+        public async Task<string> KepFeltoltes(string felhasznaloNev, string jelszo, string URL, string oldalNeve, ByteArrayContent kepByteTomb, string fajlNev)
         {
             string oldalAzonositoja = GetOldalIDNevAlapjan(felhasznaloNev, jelszo, URL, oldalNeve);
             using (var httpClient = new HttpClient())
@@ -54,6 +52,7 @@ namespace CSConfluenceAutomationFWWPF
                     request.Content = multipartContent;
 
                     var response = await httpClient.SendAsync(request);
+                    return response.Content.ReadAsStringAsync().Result;
                 }
             }
         }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -8,6 +9,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -45,7 +47,7 @@ namespace CSConfluenceAutomationFWWPF
 
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "html files (*.html)|*.html";
-            openFileDialog.InitialDirectory = @"d:\";
+            openFileDialog.InitialDirectory = @"c:\";
 
             if (openFileDialog.ShowDialog() == true)
             {
@@ -56,18 +58,28 @@ namespace CSConfluenceAutomationFWWPF
 
             html = html.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\"", "'");
 
-            metodus.AddConfluencePage(
-                APPSETTINGS_OLDALCIM
-                , APPSETTINGS_TERAZONOSITO
-                , APPSETTINGS_SZULOOSZTALYAZONOSITO
+            var response = metodus.AddConfluencePage(
+                uiPageName.Text
+                , uiSpaceKey.Text
+                , uiParentPageName.Text
                 , html
                 , APPSETTINGS_URL
                 , APPSETTINGS_FELHASZNALONEV
                 , APPSETTINGS_JELSZO
                 );
+
+            Response JSONObj = new Response();
+            JSONObj = JsonConvert.DeserializeObject<Response>(response);
+            if (JSONObj.statusCode == null)
+            {
+                MessageBox.Show("Sikeres feltöltés!");
+            } else
+            {
+                MessageBox.Show("Hiba!\n\n" + JSONObj.statusCode + "\n" + JSONObj.message);
+            }
         }
 
-        public void UploadImage(object sender, RoutedEventArgs e)
+        public async void UploadImage(object sender, RoutedEventArgs e)
         {
             Metodus metodus = new Metodus();
 
@@ -84,15 +96,27 @@ namespace CSConfluenceAutomationFWWPF
                 fajlNev = System.IO.Path.GetFileName(openFileDialog.FileName);
             }
 
-            metodus.KepFeltoltes(
+            string response = await metodus.KepFeltoltes(
                 APPSETTINGS_FELHASZNALONEV
                 , APPSETTINGS_JELSZO
                 , APPSETTINGS_URL
-                , APPSETTINGS_OLDALNEVE
+                , uiPageName.Text
                 , kepByteTomb
                 , fajlNev
                 );
+
+            Response JSONObj = new Response();
+            JSONObj = JsonConvert.DeserializeObject<Response>(response);
+            if (JSONObj.statusCode == null)
+            {
+                MessageBox.Show("Sikeres feltöltés!");
+            }
+            else
+            {
+                MessageBox.Show("Hiba!\n\n" + JSONObj.statusCode + "\n" + JSONObj.message);
+            }
         }
-       
     }
+       
+    
 }
