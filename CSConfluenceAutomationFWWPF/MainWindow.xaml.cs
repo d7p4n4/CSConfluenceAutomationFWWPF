@@ -76,7 +76,7 @@ namespace CSConfluenceAutomationFWWPF
 
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "image files (*.jpeg)|*.jpeg|(*.jpg)|*.jpg|(*.png)|*.png";
-            openFileDialog.InitialDirectory = @"d:\";
+            openFileDialog.InitialDirectory = @"c:\";
 
             if (openFileDialog.ShowDialog() == true)
             {
