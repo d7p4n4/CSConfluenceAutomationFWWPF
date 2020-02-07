@@ -33,12 +33,15 @@ namespace CSConfluenceAutomationFWWPF
         public string APPSETTINGS_FELHASZNALONEV = ConfigurationManager.AppSettings["FelhasznaloNev"];
         public string APPSETTINGS_URL = ConfigurationManager.AppSettings["URL"];
         public string APPSETTINGS_TERAZONOSITO = ConfigurationManager.AppSettings["TerAzonosito"];
-        public string APPSETTINGS_SZULOOSZTALYAZONOSITO = ConfigurationManager.AppSettings["SzuloOsztalyAzonosito"];
+        public string APPSETTINGS_SZULOOSZTALYNEVE = ConfigurationManager.AppSettings["SzuloOsztalyNeve"];
         public string APPSETTINGS_OLDALCIM = ConfigurationManager.AppSettings["OldalCim"];
         public string APPSETTINGS_OLDALNEVE = ConfigurationManager.AppSettings["OldalNeve"];
         public MainWindow()
         {
             InitializeComponent();
+            uiPageName.Text = APPSETTINGS_OLDALNEVE;
+            uiParentPageName.Text = APPSETTINGS_SZULOOSZTALYNEVE;
+            uiSpaceKey.Text = APPSETTINGS_TERAZONOSITO;
         }
         
         private void UploadClick(object sender, RoutedEventArgs e)
