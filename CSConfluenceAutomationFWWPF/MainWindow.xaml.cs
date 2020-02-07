@@ -27,6 +27,8 @@ namespace CSConfluenceAutomationFWWPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        private static readonly log4net.ILog _naplo = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public string APPSETTINGS_JELSZO = ConfigurationManager.AppSettings["Jelszo"];
         public string APPSETTINGS_FELHASZNALONEV = ConfigurationManager.AppSettings["FelhasznaloNev"];
         public string APPSETTINGS_URL = ConfigurationManager.AppSettings["URL"];
@@ -41,79 +43,92 @@ namespace CSConfluenceAutomationFWWPF
         
         private void UploadClick(object sender, RoutedEventArgs e)
         {
-            Metodus metodus = new Metodus();
-
-            string html = "";
-
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "html files (*.html)|*.html";
-            openFileDialog.InitialDirectory = @"c:\";
-
-            if (openFileDialog.ShowDialog() == true)
+            try
             {
-                html = File.ReadAllText(openFileDialog.FileName);
-            }
+                Metodus metodus = new Metodus();
 
-            Regex re = new Regex("\r(?= *\r)");
+                string html = "";
 
-            html = html.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\"", "'");
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "html files (*.html)|*.html";
+                openFileDialog.InitialDirectory = @"c:\";
 
-            var response = metodus.AddConfluencePage(
-                uiPageName.Text
-                , uiSpaceKey.Text
-                , uiParentPageName.Text
-                , html
-                , APPSETTINGS_URL
-                , APPSETTINGS_FELHASZNALONEV
-                , APPSETTINGS_JELSZO
-                );
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    html = File.ReadAllText(openFileDialog.FileName);
+                }
 
-            Response JSONObj = new Response();
-            JSONObj = JsonConvert.DeserializeObject<Response>(response);
-            if (JSONObj.statusCode == null)
+                Regex re = new Regex("\r(?= *\r)");
+
+                html = html.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\"", "'");
+
+                var response = metodus.AddConfluencePage(
+                    uiPageName.Text
+                    , uiSpaceKey.Text
+                    , uiParentPageName.Text
+                    , html
+                    , APPSETTINGS_URL
+                    , APPSETTINGS_FELHASZNALONEV
+                    , APPSETTINGS_JELSZO
+                    );
+
+                Response JSONObj = new Response();
+                JSONObj = JsonConvert.DeserializeObject<Response>(response);
+                if (JSONObj.statusCode == null)
+                {
+                    MessageBox.Show("Sikeres feltöltés!");
+                }
+                else
+                {
+                    MessageBox.Show("Hiba!\n\n" + JSONObj.statusCode + "\n" + JSONObj.message);
+                }
+            }catch(Exception exception)
             {
-                MessageBox.Show("Sikeres feltöltés!");
-            } else
-            {
-                MessageBox.Show("Hiba!\n\n" + JSONObj.statusCode + "\n" + JSONObj.message);
+                _naplo.Error(exception.StackTrace);
             }
         }
 
         public async void UploadImage(object sender, RoutedEventArgs e)
         {
-            Metodus metodus = new Metodus();
-
-            string fajlNev = "";
-            ByteArrayContent kepByteTomb = null;
-
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "image files (*.jpeg)|*.jpeg|(*.jpg)|*.jpg|(*.png)|*.png";
-            openFileDialog.InitialDirectory = @"c:\";
-
-            if (openFileDialog.ShowDialog() == true)
+            try
             {
-                kepByteTomb = new ByteArrayContent(File.ReadAllBytes(openFileDialog.FileName));
-                fajlNev = System.IO.Path.GetFileName(openFileDialog.FileName);
-            }
+                Metodus metodus = new Metodus();
 
-            string response = await metodus.KepFeltoltes(
-                APPSETTINGS_FELHASZNALONEV
-                , APPSETTINGS_JELSZO
-                , APPSETTINGS_URL
-                , uiPageName.Text
-                , kepByteTomb
-                , fajlNev
-                );
+                string fajlNev = "";
+                ByteArrayContent kepByteTomb = null;
 
-            Response JSONObj = new Response();
-            JSONObj = JsonConvert.DeserializeObject<Response>(response);
-            if (JSONObj.statusCode == null)
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "image files (*.jpeg)|*.jpeg|(*.jpg)|*.jpg|(*.png)|*.png";
+                openFileDialog.InitialDirectory = @"c:\";
+
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    kepByteTomb = new ByteArrayContent(File.ReadAllBytes(openFileDialog.FileName));
+                    fajlNev = System.IO.Path.GetFileName(openFileDialog.FileName);
+                }
+
+                string response = await metodus.KepFeltoltes(
+                    APPSETTINGS_FELHASZNALONEV
+                    , APPSETTINGS_JELSZO
+                    , APPSETTINGS_URL
+                    , uiPageName.Text
+                    , kepByteTomb
+                    , fajlNev
+                    );
+
+                Response JSONObj = new Response();
+                JSONObj = JsonConvert.DeserializeObject<Response>(response);
+                if (JSONObj.statusCode == null)
+                {
+                    MessageBox.Show("Sikeres feltöltés!");
+                }
+                else
+                {
+                    MessageBox.Show("Hiba!\n\n" + JSONObj.statusCode + "\n" + JSONObj.message);
+                }
+            }catch(Exception exception)
             {
-                MessageBox.Show("Sikeres feltöltés!");
-            }
-            else
-            {
-                MessageBox.Show("Hiba!\n\n" + JSONObj.statusCode + "\n" + JSONObj.message);
+                _naplo.Error(exception.StackTrace);
             }
         }
     }
