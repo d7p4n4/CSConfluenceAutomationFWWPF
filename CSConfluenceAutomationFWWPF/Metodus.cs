@@ -33,7 +33,7 @@ namespace CSConfluenceAutomationFWWPF
                 {
                     cim = APPSETTINGS_OLDALNEVE;
                 }
-                string szuloOsztalyAzonosito = GetOldalIDNevAlapjan(felhasznaloNev, jelszo, URL, szuloOsztalyNeve);
+                string szuloOsztalyAzonosito = GetOldalIDNevAlapjan(felhasznaloNev, jelszo, terAzonosito, URL, szuloOsztalyNeve);
 
                 string DATA = "{\"type\":\"page\",\"ancestors\":[{\"type\":\"page\",\"id\":" + szuloOsztalyAzonosito +
                     "}],\"title\":\"" + cim + "\",\"space\":{\"key\":\"" + terAzonosito + "\"},\"body\":{\"storage\":{\"value\":\""
@@ -59,7 +59,7 @@ namespace CSConfluenceAutomationFWWPF
         }
 
 
-        public async Task<string> KepFeltoltes(string felhasznaloNev, string jelszo, string URL, string oldalNeve, ByteArrayContent kepByteTomb, string fajlNev)
+        public async Task<string> KepFeltoltes(string felhasznaloNev, string jelszo, string terAzonosito, string URL, string oldalNeve, ByteArrayContent kepByteTomb, string fajlNev)
         {
             try { 
             if (oldalNeve.Equals(""))
@@ -67,7 +67,7 @@ namespace CSConfluenceAutomationFWWPF
                 oldalNeve = APPSETTINGS_OLDALNEVE;
             }
 
-            string oldalAzonositoja = GetOldalIDNevAlapjan(felhasznaloNev, jelszo, URL, oldalNeve);
+            string oldalAzonositoja = GetOldalIDNevAlapjan(felhasznaloNev, jelszo, terAzonosito, URL, oldalNeve);
             using (var httpClient = new HttpClient())
             {
                 using (var request = new HttpRequestMessage(new HttpMethod("POST"), URL + "/" + oldalAzonositoja + "/child/attachment"))
@@ -94,13 +94,13 @@ namespace CSConfluenceAutomationFWWPF
             }
         }
 
-        public string GetOldalIDNevAlapjan(string felhasznaloNev, string jelszo, string URL, string oldalNeve)
+        public string GetOldalIDNevAlapjan(string felhasznaloNev, string jelszo, string terAzonosito, string URL, string oldalNeve)
         {
             try { 
             string eredmeny = "";
             using (var httpClient = new HttpClient())
             {
-                using (var request = new HttpRequestMessage(new HttpMethod("GET"), URL + "?title=" + oldalNeve + "&spaceKey=AT&expand=history"))
+                using (var request = new HttpRequestMessage(new HttpMethod("GET"), URL + "?title=" + oldalNeve + "&spaceKey=" + terAzonosito + "&expand=history"))
                 {
                     var base64authorization = Convert.ToBase64String(Encoding.ASCII.GetBytes(felhasznaloNev + ":" + jelszo));
                     request.Headers.TryAddWithoutValidation("Authorization", $"Basic {base64authorization}");

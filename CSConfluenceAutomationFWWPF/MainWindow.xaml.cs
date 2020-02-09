@@ -113,6 +113,7 @@ namespace CSConfluenceAutomationFWWPF
                 string response = await metodus.KepFeltoltes(
                     APPSETTINGS_FELHASZNALONEV
                     , APPSETTINGS_JELSZO
+                    , APPSETTINGS_TERAZONOSITO
                     , APPSETTINGS_URL
                     , uiPageName.Text
                     , kepByteTomb
