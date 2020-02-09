@@ -111,7 +111,7 @@ namespace CSConfluenceAutomationFWWPF
                     string result = message.Content.ReadAsStringAsync().Result;
                     description = result;
 
-                    eredmeny = result.Replace("{\"results\":[{\"id\":\"", "").Substring(0, 8);
+                    eredmeny = result.Replace("{\"results\":[{\"id\":\"", "").Substring(0, 7);
                 }
             }
             return eredmeny;

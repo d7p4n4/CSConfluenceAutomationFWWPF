@@ -10,5 +10,6 @@ namespace CSConfluenceAutomationFWWPF
     {
         public string statusCode { get; set; }
         public string message { get; set; }
+        public string id { get; set; }
     }
 }
