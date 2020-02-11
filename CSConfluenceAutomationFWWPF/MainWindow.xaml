@@ -5,15 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CSConfluenceAutomationFWWPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="300" Width="350">
+        Title="MainWindow" Height="300" Width="550">
     <Grid>
         <Label Content="Parent Page Title:" Margin="25 0 0 200" Height="25"/>
-        <TextBox x:Name="uiParentPageName" Width="150" Height="25" Margin="150 0 0 200"/>
+        <TextBox x:Name="uiParentPageName" Width="150" Height="25" Margin="0 0 100 200"/>
         <Label Content="Page Title:" Margin="25 0 0 125" Height="25"/>
-        <TextBox x:Name="uiPageName" Width="150" Height="25" Margin="150 0 0 125"/>
-        <Label Content="Space Key::" Margin="25 0 0 50" Height="25"/>
-        <TextBox x:Name="uiSpaceKey" Width="150" Height="25" Margin="150 0 0 50"/>
+        <TextBox x:Name="uiPageName" Width="150" Height="25" Margin="0 0 100 125"/>
+        <Label Content="Space Key:" Margin="25 0 0 50" Height="25"/>
+        <TextBox x:Name="uiSpaceKey" Width="150" Height="25" Margin="0 0 100 50"/>
+        <Label Content="Version Number:" Margin="25 0 0 -25" Height="25"/>
+        <TextBox x:Name="uiVersionNumber" Width="150" Height="25" Margin="0 0 100 -25"/>
+        <Label Content="Username" Margin="350 0 0 150" Height="25"/>
+        <TextBox x:Name="uiFelhasznaloNev" Width="150" Height="25" Margin="300 0 0 100"/>
+        <Label Content="Password" Margin="350 0 0 50" Height="25"/>
+        <PasswordBox x:Name="uiJelszo" Width="150" Height="25" Margin="300 0 0 0"/>
         <Button Content="Upload to Conflu" Click="UploadClick" Height="50" Width="100" Margin="0 150 110 0"/>
-        <Button Content="Upload image" Click="UploadImage" Height="50" Width="100" Margin="110 150 0 0"/>
+        <Button Content="Upload image" Click="UploadImage" Height="50" Width="100" Margin="0 150 350 0"/>
+        <Button Content="Update Page" Click="UpdatePage" Height="50" Width="100" Margin="130 150 0 0"/>
     </Grid>
 </Window>

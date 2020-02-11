@@ -65,33 +65,95 @@ namespace CSConfluenceAutomationFWWPF
                 Regex re = new Regex("\r(?= *\r)");
 
                 html = html.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\"", "'");
-
-                var response = metodus.AddConfluencePage(
-                    uiPageName.Text
-                    , uiSpaceKey.Text
-                    , uiParentPageName.Text
-                    , html
-                    , APPSETTINGS_URL
-                    , APPSETTINGS_FELHASZNALONEV
-                    , APPSETTINGS_JELSZO
-                    );
-
-                Response JSONObj = new Response();
-                JSONObj = JsonConvert.DeserializeObject<Response>(response);
-                if (JSONObj.statusCode == null)
+                if (uiFelhasznaloNev.Text.Equals("") || uiJelszo.Password.Equals(""))
                 {
-                    MessageBox.Show("Sikeres feltöltés!");
+                    MessageBox.Show("Username and password can not be empty!");
                 }
                 else
                 {
-                    MessageBox.Show("Hiba!\n\n" + JSONObj.statusCode + "\n" + JSONObj.message);
+
+                    var response = metodus.AddConfluencePage(
+                        uiPageName.Text
+                        , uiSpaceKey.Text
+                        , uiParentPageName.Text
+                        , html
+                        , APPSETTINGS_URL
+                        , uiFelhasznaloNev.Text
+                        , uiJelszo.Password
+                        );
+
+                    Response JSONObj = new Response();
+                    JSONObj = JsonConvert.DeserializeObject<Response>(response);
+                    if (JSONObj.statusCode == null)
+                    {
+                        MessageBox.Show("Sikeres feltöltés!");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Hiba!\n\n" + JSONObj.statusCode + "\n" + JSONObj.message);
+                    }
                 }
             }catch(Exception exception)
             {
                 _naplo.Error(exception.StackTrace);
             }
         }
+        
+        private void UpdatePage(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Metodus metodus = new Metodus();
 
+                string html = "";
+
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "html files (*.html)|*.html";
+                openFileDialog.InitialDirectory = @"c:\";
+
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    html = File.ReadAllText(openFileDialog.FileName);
+                }
+
+                Regex re = new Regex("\r(?= *\r)");
+
+                html = html.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\"", "'");
+                if (uiFelhasznaloNev.Text.Equals("") || uiJelszo.Password.Equals(""))
+                {
+                    MessageBox.Show("Username and password can not be empty!");
+                }
+                else
+                {
+
+                    var response = metodus.UpdateConfluencePage(
+                        uiPageName.Text
+                        , uiSpaceKey.Text
+                        , html
+                        , APPSETTINGS_URL
+                        , uiFelhasznaloNev.Text
+                        , uiJelszo.Password
+                        , uiVersionNumber.Text
+                        );
+
+                    Response JSONObj = new Response();
+                    JSONObj = JsonConvert.DeserializeObject<Response>(response);
+                    if (JSONObj.statusCode == null)
+                    {
+                        MessageBox.Show("Sikeres feltöltés!");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Hiba!\n\n" + JSONObj.statusCode + "\n" + JSONObj.message);
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                _naplo.Error(exception.StackTrace);
+            }
+        }
+       
         public async void UploadImage(object sender, RoutedEventArgs e)
         {
             try
@@ -110,10 +172,16 @@ namespace CSConfluenceAutomationFWWPF
                     kepByteTomb = new ByteArrayContent(File.ReadAllBytes(openFileDialog.FileName));
                     fajlNev = System.IO.Path.GetFileName(openFileDialog.FileName);
                 }
+                if (uiFelhasznaloNev.Text.Equals("") || uiJelszo.Password.Equals(""))
+                {
+                    MessageBox.Show("Username and password can not be empty!");
+                }
+                else
+                {
 
-                string response = await metodus.KepFeltoltes(
-                    APPSETTINGS_FELHASZNALONEV
-                    , APPSETTINGS_JELSZO
+                    string response = await metodus.KepFeltoltes(
+                    uiFelhasznaloNev.Text
+                    , uiJelszo.Password
                     , APPSETTINGS_TERAZONOSITO
                     , APPSETTINGS_URL
                     , uiPageName.Text
@@ -121,15 +189,16 @@ namespace CSConfluenceAutomationFWWPF
                     , fajlNev
                     );
 
-                Response JSONObj = new Response();
-                JSONObj = JsonConvert.DeserializeObject<Response>(response);
-                if (JSONObj.statusCode == null)
-                {
-                    MessageBox.Show("Sikeres feltöltés!");
-                }
-                else
-                {
-                    MessageBox.Show("Hiba!\n\n" + JSONObj.statusCode + "\n" + JSONObj.message);
+                    Response JSONObj = new Response();
+                    JSONObj = JsonConvert.DeserializeObject<Response>(response);
+                    if (JSONObj.statusCode == null)
+                    {
+                        MessageBox.Show("Sikeres feltöltés!");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Hiba!\n\n" + JSONObj.statusCode + "\n" + JSONObj.message);
+                    }
                 }
             }catch(Exception exception)
             {
