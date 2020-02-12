@@ -19,8 +19,7 @@
         <TextBox x:Name="uiFelhasznaloNev" Width="150" Height="25" Margin="300 0 0 100"/>
         <Label Content="Password" Margin="350 0 0 50" Height="25"/>
         <PasswordBox x:Name="uiJelszo" Width="150" Height="25" Margin="300 0 0 0"/>
-        <Button Content="Upload to Conflu" Click="UploadClick" Height="50" Width="100" Margin="0 150 110 0"/>
         <Button Content="Upload image" Click="UploadImage" Height="50" Width="100" Margin="0 150 350 0"/>
-        <Button Content="Update Page" Click="UpdatePage" Height="50" Width="100" Margin="130 150 0 0"/>
+        <Button Content="Upload or Update Page" Click="UploadOrUpdatePage" Height="50" Width="250" Margin="50 150 0 0"/>
     </Grid>
 </Window>

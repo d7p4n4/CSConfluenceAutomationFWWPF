@@ -99,7 +99,7 @@ namespace CSConfluenceAutomationFWWPF
             }
         }
         
-        private void UpdatePage(object sender, RoutedEventArgs e)
+        private void UploadOrUpdatePage(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -125,26 +125,67 @@ namespace CSConfluenceAutomationFWWPF
                 }
                 else
                 {
+                    var letezikAzOldal = metodus.IsPageExists(
+                    APPSETTINGS_URL
+                    , uiPageName.Text
+                    , uiSpaceKey.Text
+                    , uiFelhasznaloNev.Text
+                    , uiJelszo.Password
+                    );
 
-                    var response = metodus.UpdateConfluencePage(
+                    if (letezikAzOldal)
+                    {
+                        if (uiVersionNumber.Text.Equals(""))
+                        {
+                            MessageBox.Show("Version number can not be empty!");
+                        }
+                        else
+                        {
+
+                            var response = metodus.UpdateConfluencePage(
+                                uiPageName.Text
+                                , uiSpaceKey.Text
+                                , html
+                                , APPSETTINGS_URL
+                                , uiFelhasznaloNev.Text
+                                , uiJelszo.Password
+                                , uiVersionNumber.Text
+                                );
+
+                            Response JSONObj = new Response();
+                            JSONObj = JsonConvert.DeserializeObject<Response>(response);
+                            if (JSONObj.statusCode == null)
+                            {
+                                MessageBox.Show("Sikeres feltöltés!");
+                            }
+                            else
+                            {
+                                MessageBox.Show("Hiba!\n\n" + JSONObj.statusCode + "\n" + JSONObj.message);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var response = metodus.AddConfluencePage(
                         uiPageName.Text
                         , uiSpaceKey.Text
+                        , uiParentPageName.Text
                         , html
                         , APPSETTINGS_URL
                         , uiFelhasznaloNev.Text
                         , uiJelszo.Password
-                        , uiVersionNumber.Text
                         );
 
-                    Response JSONObj = new Response();
-                    JSONObj = JsonConvert.DeserializeObject<Response>(response);
-                    if (JSONObj.statusCode == null)
-                    {
-                        MessageBox.Show("Sikeres feltöltés!");
-                    }
-                    else
-                    {
-                        MessageBox.Show("Hiba!\n\n" + JSONObj.statusCode + "\n" + JSONObj.message);
+                        Response JSONObj = new Response();
+                        JSONObj = JsonConvert.DeserializeObject<Response>(response);
+                        if (JSONObj.statusCode == null)
+                        {
+                            MessageBox.Show("Sikeres feltöltés!");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Hiba!\n\n" + JSONObj.statusCode + "\n" + JSONObj.message);
+                        }
                     }
                 }
             }
