@@ -37,6 +37,7 @@ namespace CSConfluenceAutomationFWWPF
         public string APPSETTINGS_SZULOOSZTALYNEVE = ConfigurationManager.AppSettings["SzuloOsztalyNeve"];
         public string APPSETTINGS_OLDALCIM = ConfigurationManager.AppSettings["OldalCim"];
         public string APPSETTINGS_OLDALNEVE = ConfigurationManager.AppSettings["OldalNeve"];
+        public int APPSETTINGS_IDHOSSZA = Convert.ToInt32(ConfigurationManager.AppSettings["IdHossza"]);
         public MainWindow()
         {
             InitializeComponent();
@@ -44,7 +45,7 @@ namespace CSConfluenceAutomationFWWPF
             uiParentPageName.Text = APPSETTINGS_SZULOOSZTALYNEVE;
             uiSpaceKey.Text = APPSETTINGS_TERAZONOSITO;
         }
-        
+        /*
         private void UploadClick(object sender, RoutedEventArgs e)
         {
             try
@@ -98,12 +99,12 @@ namespace CSConfluenceAutomationFWWPF
                 _naplo.Error(exception.StackTrace);
             }
         }
-        
+        */
         private void UploadOrUpdatePage(object sender, RoutedEventArgs e)
         {
             try
             {
-                Metodus metodus = new Metodus();
+                ConfluenceAPIMetodusok confluenceAPIMetodusok = new ConfluenceAPIMetodusok();
 
                 string html = "";
 
@@ -116,21 +117,19 @@ namespace CSConfluenceAutomationFWWPF
                     html = File.ReadAllText(openFileDialog.FileName);
                 }
 
-                Regex re = new Regex("\r(?= *\r)");
-
-                html = html.Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace("\"", "'");
                 if (uiFelhasznaloNev.Text.Equals("") || uiJelszo.Password.Equals(""))
                 {
                     MessageBox.Show("Username and password can not be empty!");
                 }
                 else
                 {
-                    var letezikAzOldal = metodus.IsPageExists(
+                    var letezikAzOldal = confluenceAPIMetodusok.IsPageExists(
                     APPSETTINGS_URL
                     , uiPageName.Text
                     , uiSpaceKey.Text
                     , uiFelhasznaloNev.Text
                     , uiJelszo.Password
+                    , APPSETTINGS_IDHOSSZA
                     );
 
                     if (letezikAzOldal)
@@ -142,7 +141,7 @@ namespace CSConfluenceAutomationFWWPF
                         else
                         {
 
-                            var response = metodus.UpdateConfluencePage(
+                            var response = confluenceAPIMetodusok.UpdateConfluencePage(
                                 uiPageName.Text
                                 , uiSpaceKey.Text
                                 , html
@@ -150,10 +149,11 @@ namespace CSConfluenceAutomationFWWPF
                                 , uiFelhasznaloNev.Text
                                 , uiJelszo.Password
                                 , uiVersionNumber.Text
+                                , APPSETTINGS_IDHOSSZA
                                 );
 
-                            Response JSONObj = new Response();
-                            JSONObj = JsonConvert.DeserializeObject<Response>(response);
+                            ConfluenceAPIResponse JSONObj = new ConfluenceAPIResponse();
+                            JSONObj = JsonConvert.DeserializeObject<ConfluenceAPIResponse>(response);
                             if (JSONObj.statusCode == null)
                             {
                                 MessageBox.Show("Sikeres feltöltés!");
@@ -166,7 +166,7 @@ namespace CSConfluenceAutomationFWWPF
                     }
                     else
                     {
-                        var response = metodus.AddConfluencePage(
+                        var response = confluenceAPIMetodusok.AddConfluencePage(
                         uiPageName.Text
                         , uiSpaceKey.Text
                         , uiParentPageName.Text
@@ -174,10 +174,11 @@ namespace CSConfluenceAutomationFWWPF
                         , APPSETTINGS_URL
                         , uiFelhasznaloNev.Text
                         , uiJelszo.Password
+                        , APPSETTINGS_IDHOSSZA
                         );
 
-                        Response JSONObj = new Response();
-                        JSONObj = JsonConvert.DeserializeObject<Response>(response);
+                        ConfluenceAPIResponse JSONObj = new ConfluenceAPIResponse();
+                        JSONObj = JsonConvert.DeserializeObject<ConfluenceAPIResponse>(response);
                         if (JSONObj.statusCode == null)
                         {
                             MessageBox.Show("Sikeres feltöltés!");
@@ -199,10 +200,10 @@ namespace CSConfluenceAutomationFWWPF
         {
             try
             {
-                Metodus metodus = new Metodus();
+                ConfluenceAPIMetodusok congluenceAPIMetodusok = new ConfluenceAPIMetodusok();
 
                 string fajlNev = "";
-                ByteArrayContent kepByteTomb = null;
+                string kepEleresiUtja = "";
 
                 OpenFileDialog openFileDialog = new OpenFileDialog();
                 openFileDialog.Filter = "image files (*.jpeg)|*.jpeg|(*.jpg)|*.jpg|(*.png)|*.png";
@@ -210,7 +211,7 @@ namespace CSConfluenceAutomationFWWPF
 
                 if (openFileDialog.ShowDialog() == true)
                 {
-                    kepByteTomb = new ByteArrayContent(File.ReadAllBytes(openFileDialog.FileName));
+                    kepEleresiUtja = openFileDialog.FileName;
                     fajlNev = System.IO.Path.GetFileName(openFileDialog.FileName);
                 }
                 if (uiFelhasznaloNev.Text.Equals("") || uiJelszo.Password.Equals(""))
@@ -220,18 +221,19 @@ namespace CSConfluenceAutomationFWWPF
                 else
                 {
 
-                    string response = await metodus.KepFeltoltes(
+                    string response = await congluenceAPIMetodusok.KepFeltoltes(
                     uiFelhasznaloNev.Text
                     , uiJelszo.Password
                     , APPSETTINGS_TERAZONOSITO
                     , APPSETTINGS_URL
                     , uiPageName.Text
-                    , kepByteTomb
+                    , kepEleresiUtja
                     , fajlNev
+                    , APPSETTINGS_IDHOSSZA
                     );
 
-                    Response JSONObj = new Response();
-                    JSONObj = JsonConvert.DeserializeObject<Response>(response);
+                    ConfluenceAPIResponse JSONObj = new ConfluenceAPIResponse();
+                    JSONObj = JsonConvert.DeserializeObject<ConfluenceAPIResponse>(response);
                     if (JSONObj.statusCode == null)
                     {
                         MessageBox.Show("Sikeres feltöltés!");
