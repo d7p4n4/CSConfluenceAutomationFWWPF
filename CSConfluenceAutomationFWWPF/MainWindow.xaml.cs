@@ -203,7 +203,7 @@ namespace CSConfluenceAutomationFWWPF
                 ConfluenceAPIMetodusok congluenceAPIMetodusok = new ConfluenceAPIMetodusok();
 
                 string fajlNev = "";
-                string kepEleresiUtja = "";
+                byte[] kepEleresiUtja = null;
 
                 OpenFileDialog openFileDialog = new OpenFileDialog();
                 openFileDialog.Filter = "image files (*.jpeg)|*.jpeg|(*.jpg)|*.jpg|(*.png)|*.png";
@@ -211,7 +211,7 @@ namespace CSConfluenceAutomationFWWPF
 
                 if (openFileDialog.ShowDialog() == true)
                 {
-                    kepEleresiUtja = openFileDialog.FileName;
+                    kepEleresiUtja = File.ReadAllBytes(openFileDialog.FileName);
                     fajlNev = System.IO.Path.GetFileName(openFileDialog.FileName);
                 }
                 if (uiFelhasznaloNev.Text.Equals("") || uiJelszo.Password.Equals(""))
