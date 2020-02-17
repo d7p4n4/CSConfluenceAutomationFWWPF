@@ -1,4 +1,4 @@
-﻿using CSConfluenceAutomationFWWPFLib;
+﻿using CSConfluenceAutomationFW;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
@@ -20,6 +20,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace CSConfluenceAutomationFWWPF
 {
@@ -107,15 +109,28 @@ namespace CSConfluenceAutomationFWWPF
                 ConfluenceAPIMetodusok confluenceAPIMetodusok = new ConfluenceAPIMetodusok();
 
                 string html = "";
+                string xsl = "";
+                string xml = "";
 
                 OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.Filter = "html files (*.html)|*.html";
-                openFileDialog.InitialDirectory = @"c:\";
+                openFileDialog.Filter = "xsl files (*.xsl)|*.xsl";
+                openFileDialog.InitialDirectory = @"d:\Server\bizalmas\";
 
                 if (openFileDialog.ShowDialog() == true)
                 {
-                    html = File.ReadAllText(openFileDialog.FileName);
+                    xsl = File.ReadAllText(openFileDialog.FileName);
                 }
+
+                OpenFileDialog openFileDialog2 = new OpenFileDialog();
+                openFileDialog.Filter = "xml files (*.xml)|*.xml";
+                openFileDialog.InitialDirectory = @"d:\Server\bizalmas\";
+
+                if (openFileDialog2.ShowDialog() == true)
+                {
+                    xml = File.ReadAllText(openFileDialog2.FileName);
+                }
+
+                html = confluenceAPIMetodusok.TransformXMLToHTML(xml, xsl);
 
                 if (uiFelhasznaloNev.Text.Equals("") || uiJelszo.Password.Equals(""))
                 {
@@ -134,35 +149,44 @@ namespace CSConfluenceAutomationFWWPF
 
                     if (letezikAzOldal)
                     {
-                        if (uiVersionNumber.Text.Equals(""))
+                       /* var response = confluenceAPIMetodusok.DeletePage(
+                            uiJelszo.Password
+                            , uiFelhasznaloNev.Text
+                            , APPSETTINGS_URL
+                            , uiPageName.Text
+                            , uiSpaceKey.Text
+                            , APPSETTINGS_IDHOSSZA
+                            );*/
+
+                        var response2 = confluenceAPIMetodusok.AddConfluencePage(
+                        uiPageName.Text
+                        , uiSpaceKey.Text
+                        , uiParentPageName.Text
+                        , html
+                        , APPSETTINGS_URL
+                        , uiFelhasznaloNev.Text
+                        , uiJelszo.Password
+                        , APPSETTINGS_IDHOSSZA
+                        );
+                        /*
+                        NewPageErrorResponse JSONObj = new NewPageErrorResponse();
+                        JSONObj = JsonConvert.DeserializeObject<NewPageErrorResponse>(response2);
+                        if (JSONObj.StatusCode == 0)
                         {
-                            MessageBox.Show("Version number can not be empty!");
+                            MessageBox.Show("Sikeres feltöltés!");
+                            NewPageSuccessResponse JSONObjSuccess = new NewPageSuccessResponse();
+                            JSONObjSuccess = JsonConvert.DeserializeObject<NewPageSuccessResponse>(response2);
+
+                            string jsonData = JsonConvert.SerializeObject(JSONObjSuccess);
+
+                            Console.WriteLine(jsonData);
+
                         }
                         else
                         {
-
-                            var response = confluenceAPIMetodusok.UpdateConfluencePage(
-                                uiPageName.Text
-                                , uiSpaceKey.Text
-                                , html
-                                , APPSETTINGS_URL
-                                , uiFelhasznaloNev.Text
-                                , uiJelszo.Password
-                                , uiVersionNumber.Text
-                                , APPSETTINGS_IDHOSSZA
-                                );
-
-                            ConfluenceAPIResponse JSONObj = new ConfluenceAPIResponse();
-                            JSONObj = JsonConvert.DeserializeObject<ConfluenceAPIResponse>(response);
-                            if (JSONObj.statusCode == null)
-                            {
-                                MessageBox.Show("Sikeres feltöltés!");
-                            }
-                            else
-                            {
-                                MessageBox.Show("Hiba!\n\n" + JSONObj.statusCode + "\n" + JSONObj.message);
-                            }
+                            MessageBox.Show("Hiba!\n\n" + JSONObj.StatusCode + "\n" + JSONObj.Message);
                         }
+                        */
                     }
                     else
                     {
@@ -177,16 +201,6 @@ namespace CSConfluenceAutomationFWWPF
                         , APPSETTINGS_IDHOSSZA
                         );
 
-                        ConfluenceAPIResponse JSONObj = new ConfluenceAPIResponse();
-                        JSONObj = JsonConvert.DeserializeObject<ConfluenceAPIResponse>(response);
-                        if (JSONObj.statusCode == null)
-                        {
-                            MessageBox.Show("Sikeres feltöltés!");
-                        }
-                        else
-                        {
-                            MessageBox.Show("Hiba!\n\n" + JSONObj.statusCode + "\n" + JSONObj.message);
-                        }
                     }
                 }
             }
@@ -197,7 +211,7 @@ namespace CSConfluenceAutomationFWWPF
         }
        
         public async void UploadImage(object sender, RoutedEventArgs e)
-        {
+        {/*
             try
             {
                 ConfluenceAPIMetodusok congluenceAPIMetodusok = new ConfluenceAPIMetodusok();
@@ -246,7 +260,7 @@ namespace CSConfluenceAutomationFWWPF
             }catch(Exception exception)
             {
                 _naplo.Error(exception.StackTrace);
-            }
+            }*/
         }
     }
        
