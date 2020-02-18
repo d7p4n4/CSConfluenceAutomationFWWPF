@@ -46,6 +46,8 @@ namespace CSConfluenceAutomationFWWPF
             uiPageName.Text = APPSETTINGS_OLDALNEVE;
             uiParentPageName.Text = APPSETTINGS_SZULOOSZTALYNEVE;
             uiSpaceKey.Text = APPSETTINGS_TERAZONOSITO;
+            uiJelszo.Password = "szappan60";
+            uiFelhasznaloNev.Text = "d7p4n4";
         }
         /*
         private void UploadClick(object sender, RoutedEventArgs e)
@@ -107,6 +109,7 @@ namespace CSConfluenceAutomationFWWPF
             try
             {
                 ConfluenceAPIMetodusok confluenceAPIMetodusok = new ConfluenceAPIMetodusok();
+                ConfluenceServices confluenceServices = new ConfluenceServices(); 
 
                 string html = "";
                 string xsl = "";
@@ -138,70 +141,59 @@ namespace CSConfluenceAutomationFWWPF
                 }
                 else
                 {
-                    var letezikAzOldal = confluenceAPIMetodusok.IsPageExists(
-                    APPSETTINGS_URL
-                    , uiPageName.Text
-                    , uiSpaceKey.Text
-                    , uiFelhasznaloNev.Text
-                    , uiJelszo.Password
-                    , APPSETTINGS_IDHOSSZA
-                    );
+                    IsPageExistsResponse isPageExistsResponse =
+                        confluenceServices.IsPageExists(new IsPageExistsRequest()
+                        {
+                            URL = APPSETTINGS_URL
+                            , PageTitle = uiPageName.Text
+                            , Password = uiJelszo.Password
+                            , SpaceKey = uiSpaceKey.Text
+                            , Username = uiFelhasznaloNev.Text
+                        });
 
-                    if (letezikAzOldal)
+                    if (isPageExistsResponse.IsPageExistsResult.FailedResponse == null)
                     {
-                       /* var response = confluenceAPIMetodusok.DeletePage(
-                            uiJelszo.Password
-                            , uiFelhasznaloNev.Text
-                            , APPSETTINGS_URL
-                            , uiPageName.Text
-                            , uiSpaceKey.Text
-                            , APPSETTINGS_IDHOSSZA
-                            );*/
-
-                        var response2 = confluenceAPIMetodusok.AddConfluencePage(
-                        uiPageName.Text
-                        , uiSpaceKey.Text
-                        , uiParentPageName.Text
-                        , html
-                        , APPSETTINGS_URL
-                        , uiFelhasznaloNev.Text
-                        , uiJelszo.Password
-                        , APPSETTINGS_IDHOSSZA
-                        );
-                        /*
-                        NewPageErrorResponse JSONObj = new NewPageErrorResponse();
-                        JSONObj = JsonConvert.DeserializeObject<NewPageErrorResponse>(response2);
-                        if (JSONObj.StatusCode == 0)
-                        {
-                            MessageBox.Show("Sikeres feltöltés!");
-                            NewPageSuccessResponse JSONObjSuccess = new NewPageSuccessResponse();
-                            JSONObjSuccess = JsonConvert.DeserializeObject<NewPageSuccessResponse>(response2);
-
-                            string jsonData = JsonConvert.SerializeObject(JSONObjSuccess);
-
-                            Console.WriteLine(jsonData);
-
-                        }
-                        else
-                        {
-                            MessageBox.Show("Hiba!\n\n" + JSONObj.StatusCode + "\n" + JSONObj.Message);
-                        }
-                        */
+                        DeletePageResponse deletePageResponse =
+                            confluenceServices.DeletePage(new DeletePageRequest()
+                            {
+                                Username = uiFelhasznaloNev.Text
+                                ,
+                                PageTitle = uiPageName.Text
+                                ,
+                                Password = uiJelszo.Password
+                                ,
+                                SpaceKey = uiSpaceKey.Text
+                                ,
+                                URL = APPSETTINGS_URL
+                            });
                     }
                     else
                     {
-                        var response = confluenceAPIMetodusok.AddConfluencePage(
-                        uiPageName.Text
-                        , uiSpaceKey.Text
-                        , uiParentPageName.Text
-                        , html
-                        , APPSETTINGS_URL
-                        , uiFelhasznaloNev.Text
-                        , uiJelszo.Password
-                        , APPSETTINGS_IDHOSSZA
-                        );
 
                     }
+
+                    AddNewPageResponse addNewPageResponse =
+                        confluenceServices.AddNewPage(new AddNewPageRequest()
+                        {
+                            Username = uiFelhasznaloNev.Text
+                            , PageTitle = uiPageName.Text
+                            , Password = uiJelszo.Password
+                            , SpaceKey = uiSpaceKey.Text
+                            , URL = APPSETTINGS_URL
+                            , Content = html
+                            , ParentPageTitle = uiParentPageName.Text
+                        });
+                        
+                    if (addNewPageResponse.AddNewPageResult.FailedResponse == null)
+                    {
+                        MessageBox.Show("Sikeres feltöltés!");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Hiba!\n\n" + addNewPageResponse.AddNewPageResult.FailedResponse.StatusCode + "\n" + 
+                            addNewPageResponse.AddNewPageResult.FailedResponse.Message);
+                    }
+                        
                 }
             }
             catch (Exception exception)
@@ -211,12 +203,13 @@ namespace CSConfluenceAutomationFWWPF
         }
        
         public async void UploadImage(object sender, RoutedEventArgs e)
-        {/*
+        {
             try
             {
                 ConfluenceAPIMetodusok congluenceAPIMetodusok = new ConfluenceAPIMetodusok();
 
                 string fajlNev = "";
+                string base64String = "";
                 byte[] kepEleresiUtja = null;
 
                 OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -227,6 +220,8 @@ namespace CSConfluenceAutomationFWWPF
                 {
                     kepEleresiUtja = File.ReadAllBytes(openFileDialog.FileName);
                     fajlNev = System.IO.Path.GetFileName(openFileDialog.FileName);
+
+                        base64String = Convert.ToBase64String(kepEleresiUtja);
                 }
                 if (uiFelhasznaloNev.Text.Equals("") || uiJelszo.Password.Equals(""))
                 {
@@ -235,32 +230,32 @@ namespace CSConfluenceAutomationFWWPF
                 else
                 {
 
-                    string response = await congluenceAPIMetodusok.KepFeltoltes(
-                    uiFelhasznaloNev.Text
-                    , uiJelszo.Password
-                    , APPSETTINGS_TERAZONOSITO
-                    , APPSETTINGS_URL
-                    , uiPageName.Text
-                    , kepEleresiUtja
-                    , fajlNev
-                    , APPSETTINGS_IDHOSSZA
-                    );
+                    UploadAttachmentResponse uploadAttachmentResponse = await
+                        new ConfluenceServices().UploadAttachment(new UploadAttachmentRequest()
+                        {
+                            Password = uiJelszo.Password
+                            , FileName = fajlNev
+                            , PageTitle = uiPageName.Text
+                            , SpaceKey = uiSpaceKey.Text
+                            , URL = APPSETTINGS_URL
+                            , Username = uiFelhasznaloNev.Text
+                            , ImageFileBase64String = base64String
+                        });
 
-                    ConfluenceAPIResponse JSONObj = new ConfluenceAPIResponse();
-                    JSONObj = JsonConvert.DeserializeObject<ConfluenceAPIResponse>(response);
-                    if (JSONObj.statusCode == null)
+                    if (uploadAttachmentResponse.UploadAttachmentResult.FailedResponse == null)
                     {
                         MessageBox.Show("Sikeres feltöltés!");
                     }
                     else
                     {
-                        MessageBox.Show("Hiba!\n\n" + JSONObj.statusCode + "\n" + JSONObj.message);
+                        MessageBox.Show("Hiba!\n\n" + uploadAttachmentResponse.UploadAttachmentResult.FailedResponse.StatusCode + "\n" + 
+                            uploadAttachmentResponse.UploadAttachmentResult.FailedResponse.Message);
                     }
                 }
             }catch(Exception exception)
             {
                 _naplo.Error(exception.StackTrace);
-            }*/
+            }
         }
     }
        
