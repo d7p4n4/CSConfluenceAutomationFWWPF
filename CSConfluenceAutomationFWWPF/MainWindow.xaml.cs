@@ -1,4 +1,6 @@
-﻿using CSConfluenceAutomationFW;
+﻿
+using CSConfluenceCapFW;
+using CSConfluenceServiceFW;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
@@ -141,40 +143,10 @@ namespace CSConfluenceAutomationFWWPF
                 }
                 else
                 {
-                    IsPageExistsResponse isPageExistsResponse =
-                        confluenceServices.IsPageExists(new IsPageExistsRequest()
-                        {
-                            URL = APPSETTINGS_URL
-                            , PageTitle = uiPageName.Text
-                            , Password = uiJelszo.Password
-                            , SpaceKey = uiSpaceKey.Text
-                            , Username = uiFelhasznaloNev.Text
-                        });
-
-                    if (isPageExistsResponse.IsPageExistsResult.FailedResponse == null)
-                    {
-                        DeletePageResponse deletePageResponse =
-                            confluenceServices.DeletePage(new DeletePageRequest()
-                            {
-                                Username = uiFelhasznaloNev.Text
-                                ,
-                                PageTitle = uiPageName.Text
-                                ,
-                                Password = uiJelszo.Password
-                                ,
-                                SpaceKey = uiSpaceKey.Text
-                                ,
-                                URL = APPSETTINGS_URL
-                            });
-                    }
-                    else
-                    {
-
-                    }
-
-                    AddNewPageResponse addNewPageResponse =
-                        confluenceServices.AddNewPage(new AddNewPageRequest()
-                        {
+                    
+                    AddNewPageCompositeResponse addNewPageCompositeResponse =
+                        confluenceServices.AddNewPageComposite(new AddNewPageCompositeRequest()
+                        { 
                             Username = uiFelhasznaloNev.Text
                             , PageTitle = uiPageName.Text
                             , Password = uiJelszo.Password
@@ -184,14 +156,14 @@ namespace CSConfluenceAutomationFWWPF
                             , ParentPageTitle = uiParentPageName.Text
                         });
                         
-                    if (addNewPageResponse.AddNewPageResult.FailedResponse == null)
+                    if (addNewPageCompositeResponse.AddNewPageResult.FailedResponse == null)
                     {
                         MessageBox.Show("Sikeres feltöltés!");
                     }
                     else
                     {
-                        MessageBox.Show("Hiba!\n\n" + addNewPageResponse.AddNewPageResult.FailedResponse.StatusCode + "\n" + 
-                            addNewPageResponse.AddNewPageResult.FailedResponse.Message);
+                        MessageBox.Show("Hiba!\n\n" + addNewPageCompositeResponse.AddNewPageResult.FailedResponse.StatusCode + "\n" + 
+                            addNewPageCompositeResponse.AddNewPageResult.FailedResponse.Message);
                     }
                         
                 }
@@ -230,8 +202,8 @@ namespace CSConfluenceAutomationFWWPF
                 else
                 {
 
-                    UploadAttachmentResponse uploadAttachmentResponse = await
-                        new ConfluenceServices().UploadAttachment(new UploadAttachmentRequest()
+                    UploadAttachmentCompositeRespone uploadAttachmentCompositeResponse = await
+                        new ConfluenceServices().UploadAttachmentComposite(new UploadAttachmentCompositeRequest()
                         {
                             Password = uiJelszo.Password
                             , FileName = fajlNev
@@ -242,14 +214,14 @@ namespace CSConfluenceAutomationFWWPF
                             , ImageFileBase64String = base64String
                         });
 
-                    if (uploadAttachmentResponse.UploadAttachmentResult.FailedResponse == null)
+                    if (uploadAttachmentCompositeResponse.UploadAttachmentResult.FailedResponse == null)
                     {
                         MessageBox.Show("Sikeres feltöltés!");
                     }
                     else
                     {
-                        MessageBox.Show("Hiba!\n\n" + uploadAttachmentResponse.UploadAttachmentResult.FailedResponse.StatusCode + "\n" + 
-                            uploadAttachmentResponse.UploadAttachmentResult.FailedResponse.Message);
+                        MessageBox.Show("Hiba!\n\n" + uploadAttachmentCompositeResponse.UploadAttachmentResult.FailedResponse.StatusCode + "\n" + 
+                            uploadAttachmentCompositeResponse.UploadAttachmentResult.FailedResponse.Message);
                     }
                 }
             }catch(Exception exception)

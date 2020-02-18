@@ -41,9 +41,16 @@
     <Reference Include="CSConfluenceAutomationFW">
       <HintPath>C:\library\LPCsharp\CSConfluenceAutomationFW.dll</HintPath>
     </Reference>
+    <Reference Include="CSConfluenceCapFW, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\library\LPCsharp\CSConfluenceCapFW.dll</HintPath>
+    </Reference>
     <Reference Include="CSConfluenceClassesFW, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\library\LPCsharp\CSConfluenceClassesFW.dll</HintPath>
+    </Reference>
+    <Reference Include="CSConfluenceServiceFW">
+      <HintPath>C:\library\LPCsharp\CSConfluenceServiceFW.dll</HintPath>
     </Reference>
     <Reference Include="CustomMarshalers" />
     <Reference Include="Dapplo.Confluence, Version=0.9.0.0, Culture=neutral, PublicKeyToken=5be96fed5d651fee, processorArchitecture=MSIL">
