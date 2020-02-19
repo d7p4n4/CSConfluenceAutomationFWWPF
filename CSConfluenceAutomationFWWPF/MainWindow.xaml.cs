@@ -143,7 +143,7 @@ namespace CSConfluenceAutomationFWWPF
                 }
                 else
                 {
-                    
+                    /*
                     AddNewPageCompositeResponse addNewPageCompositeResponse =
                         confluenceServices.AddNewPageComposite(new AddNewPageCompositeRequest()
                         { 
@@ -155,22 +155,50 @@ namespace CSConfluenceAutomationFWWPF
                             , Content = html
                             , ParentPageTitle = uiParentPageName.Text
                         });
-                        
-                    if (addNewPageCompositeResponse.AddNewPageResult.FailedResponse == null)
+                        */
+
+                    UpdateOrAddPageCompositeResponse updateOrAddPageCompositeResponse =
+                        confluenceServices.UpdateOrAddPageComposite(new UpdateOrAddPageCompositeRequest()
+                        {
+                            Username = uiFelhasznaloNev.Text
+                            ,
+                            PageTitle = uiPageName.Text
+                            ,
+                            Password = uiJelszo.Password
+                            ,
+                            SpaceKey = uiSpaceKey.Text
+                            ,
+                            URL = APPSETTINGS_URL
+                            ,
+                            Content = html
+                            ,
+                            ParentPageTitle = uiParentPageName.Text
+                        });
+                    if (updateOrAddPageCompositeResponse.AddNewPageResult != null && updateOrAddPageCompositeResponse.AddNewPageResult.FailedResponse == null)
                     {
-                        MessageBox.Show("Sikeres feltöltés!");
+                        MessageBox.Show("Sikeres új oldal feltöltés!");
                     }
-                    else
+                    else if(updateOrAddPageCompositeResponse.AddNewPageResult != null && updateOrAddPageCompositeResponse.AddNewPageResult.FailedResponse != null)
                     {
-                        MessageBox.Show("Hiba!\n\n" + addNewPageCompositeResponse.AddNewPageResult.FailedResponse.StatusCode + "\n" + 
-                            addNewPageCompositeResponse.AddNewPageResult.FailedResponse.Message);
+                        MessageBox.Show("Hiba!\n\n" + updateOrAddPageCompositeResponse.AddNewPageResult.FailedResponse.StatusCode + "\n" + 
+                            updateOrAddPageCompositeResponse.AddNewPageResult.FailedResponse.Message);
                     }
-                        
+                    else if(updateOrAddPageCompositeResponse.AddNewPageResult == null && updateOrAddPageCompositeResponse.UpdatePageResult.FailedResponse == null)
+                    {
+                        MessageBox.Show("Sikeres oldal frissítés!");
+                    }
+                    else if (updateOrAddPageCompositeResponse.AddNewPageResult == null && updateOrAddPageCompositeResponse.UpdatePageResult.FailedResponse != null)
+                    {
+                        MessageBox.Show("Hiba!\n\n" + updateOrAddPageCompositeResponse.UpdatePageResult.FailedResponse.StatusCode + "\n" +
+                            updateOrAddPageCompositeResponse.UpdatePageResult.FailedResponse.Message);
+                    }
+
                 }
             }
             catch (Exception exception)
             {
                 _naplo.Error(exception.StackTrace);
+                MessageBox.Show(exception.Message + "\n\n" + exception.TargetSite + "\n\n" + exception.StackTrace);
             }
         }
        
@@ -227,6 +255,7 @@ namespace CSConfluenceAutomationFWWPF
             }catch(Exception exception)
             {
                 _naplo.Error(exception.StackTrace);
+                MessageBox.Show(exception.Message + "\n\n" + exception.TargetSite + "\n\n" + exception.StackTrace);
             }
         }
     }
